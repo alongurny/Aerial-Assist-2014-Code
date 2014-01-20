@@ -1,7 +1,5 @@
 package drivetrain;
 
-import edu.wpi.first.wpilibj.templates.Vars;
-
 /**
  *
  * @author Alon
@@ -23,13 +21,11 @@ public class Drivetrain {
     public void straight(double speed) {
         setLeftSpeed(speed);
         setRightSpeed(speed);
-        scaleFactors(speed, speed);
     }
 
     public void rotate(double speed) {
         setLeftSpeed(speed);
         setRightSpeed(-speed);
-        scaleFactors(speed, speed);
     }
 
     public void arcade(double moveValue, double rotateValue) {
@@ -62,7 +58,6 @@ public class Drivetrain {
     public void twoJoystickDrive(double leftSpeed, double rightSpeed) {
         setLeftSpeed(leftSpeed);
         setRightSpeed(rightSpeed);
-        scaleFactors(leftSpeed, rightSpeed);
     }
 
     public void setLeftSpeed(double speed) {
@@ -72,30 +67,7 @@ public class Drivetrain {
     public void setRightSpeed(double speed) {
         rightGearbox.set(-speed);
     }
-
-    public void setLeftSpeedFactor(double factor) {
-        leftGearbox.setSpeedFactor(factor);
-    }
-
-    public void setRightSpeedFactor(double factor) {
-        rightGearbox.setSpeedFactor(factor);
-    }
-
-    private void scaleFactors(double wantedLeftSpeed, double wantedRightSpeed) {
-        final double NO_SCALE_SPEED = Vars.Gearbox.NO_SCALE_SPEED;
-        if (Math.abs(getLeftSpeed()) <= NO_SCALE_SPEED || Math.abs(getRightSpeed()) <= NO_SCALE_SPEED
-                || getLeftSpeed() == getRightSpeed()) {
-            setLeftSpeedFactor(1);
-            setRightSpeedFactor(1);
-        } else if (getLeftSpeed() > getRightSpeed()) {
-            setLeftSpeedFactor(getRightSpeed() / getLeftSpeed() * wantedLeftSpeed / wantedRightSpeed);
-            setRightSpeedFactor(1);
-        } else {
-            setRightSpeedFactor(getLeftSpeed() / getRightSpeed() * wantedRightSpeed / wantedLeftSpeed);
-            setLeftSpeedFactor(1);
-        }
-    }
-
+    
     public double getLeftSpeed() {
         return leftGearbox.getVelocity();
     }
