@@ -32,15 +32,25 @@ public class Drivetrain {
         scaleFactors(speed, speed);
     }
 
-    public void arcade(double speed, double angularSpeed) {
+    public void arcade(double moveValue, double rotateValue) {
         double leftMotorSpeed;
         double rightMotorSpeed;
-        if (angularSpeed > 0.0) {
-            leftMotorSpeed = -Math.max(-speed, angularSpeed);
-            rightMotorSpeed = speed + angularSpeed;
+        if (moveValue > 0.0) {
+            if (rotateValue > 0.0) {
+                leftMotorSpeed = moveValue - rotateValue;
+                rightMotorSpeed = Math.max(moveValue, rotateValue);
+            } else {
+                leftMotorSpeed = Math.max(moveValue, -rotateValue);
+                rightMotorSpeed = moveValue + rotateValue;
+            }
         } else {
-            leftMotorSpeed = speed - angularSpeed;
-            rightMotorSpeed = -Math.max(-speed, -angularSpeed);
+            if (rotateValue > 0.0) {
+                leftMotorSpeed = -Math.max(-moveValue, rotateValue);
+                rightMotorSpeed = moveValue + rotateValue;
+            } else {
+                leftMotorSpeed = moveValue - rotateValue;
+                rightMotorSpeed = -Math.max(-moveValue, -rotateValue);
+            }
         }
         twoJoystickDrive(leftMotorSpeed, rightMotorSpeed);
     }
