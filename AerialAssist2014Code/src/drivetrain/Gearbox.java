@@ -1,16 +1,13 @@
 package drivetrain;
 
+import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.SpeedController;
-import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.templates.Utils;
 
 /**
  *
  * @author asaf
  */
 public class Gearbox implements SpeedController {
-
-    private double speedFactor = 1;
 
     private SpeedController frontController, rearController, midController;
 
@@ -21,7 +18,7 @@ public class Gearbox implements SpeedController {
      * @param rearChannel channel of the second SpeedController
      */
     public Gearbox(int frontChannel, int rearChannel) {
-        this(new Talon(frontChannel), new Talon(rearChannel));
+        this(new Jaguar(frontChannel), new Jaguar(rearChannel));
     }
 
     /**
@@ -35,7 +32,7 @@ public class Gearbox implements SpeedController {
     }
 
     public Gearbox(int frontChannel, int rearChannel, int midChannel) {
-        this(new Talon(frontChannel), new Talon(rearChannel), new Talon(midChannel));
+        this(new Jaguar(frontChannel), new Jaguar(rearChannel), new Jaguar(midChannel));
     }
 
     /**
@@ -60,8 +57,8 @@ public class Gearbox implements SpeedController {
     }
 
     /**
-     * @deprecated Returns the value inserted and not the real value
-     * @return Value used in set
+     * @deprecated Does not return the actual speed of the Gearbox
+     * @return Speed of the Gearbox
      */
     public double get() {
         return frontController.get();
@@ -76,8 +73,16 @@ public class Gearbox implements SpeedController {
         set(speed);
     }
 
+    /**
+     * 
+     * @param speed Speed of the Gearbox
+     */
     public void set(double speed) {
-        speed = Utils.limitSpeed(speedFactor * speed);
+        if (speed > 1) {
+            speed = 1;
+        } else if (speed < -1) {
+            speed = -1;
+        }
         frontController.set(speed);
         rearController.set(speed);
         if (hasThreeControllers()) {
@@ -85,6 +90,9 @@ public class Gearbox implements SpeedController {
         }
     }
 
+    /**
+     * Disable.
+     */
     public void disable() {
         frontController.disable();
         rearController.disable();
@@ -93,21 +101,12 @@ public class Gearbox implements SpeedController {
         }
     }
 
+    /**
+     * Same as set(speed).
+     * Use in PID computations.
+     * @param speed 
+     */
     public void pidWrite(double speed) {
         set(speed);
     }
-
-    public void setSpeedFactor(double factor) {
-        if (factor > 1) {
-            factor = 1;
-        } else if (factor < -1) {
-            factor = -1;
-        }
-        this.speedFactor = factor;
-    }
-
-    public double getSpeedFactor() {
-        return speedFactor;
-    }
-
 }
